@@ -9,7 +9,8 @@ public class BankingApp {
     private JTextField amountField;
     private JList transferFromAccount;
     private JList transferToAccount;
-    private JTextField transAmount;
+    private JTextField transferAmount;
+    private JPanel actionPanel;
 
     public BankingApp() {
         // Create main frame
@@ -30,7 +31,7 @@ public class BankingApp {
         balanceLabel = new JLabel("Current Balance: R0.00", SwingConstants.CENTER);
         transferFromAccount = new JList<>();
         transferToAccount = new JList<>();
-        transAmount = new JTextField();
+        transferAmount = new JTextField();
         JButton transferBtn = new JButton("Transfer");
 
 
@@ -52,15 +53,16 @@ public class BankingApp {
         transferPanel.add(new JLabel("To Account:"));
         transferPanel.add(transferToAccount);
         transferPanel.add(new JLabel("Transfer Amount:"));
-        transferPanel.add(transAmount);
+        transferPanel.add(transferAmount);
         transferPanel.add(transferBtn);
 
-        /*frame.add(transferLabel);
-        frame.add(balanceLabel);
-        frame.add(new JLabel("Enter Amount:", SwingConstants.CENTER));
-        frame.add(transAmount);
-        buttonPanel.add(transferBtn);
-        frame.add(buttonPanel);*/
+        // Add components to the frame
+        frame.add(welcomeLabel);
+        frame.add(actionPanel);
+        frame.add(transferPanel);
+
+        // Display the frame
+        frame.setVisible(true);
 
         // Add button actions
         depositButton.addActionListener(new ActionListener() {
@@ -74,6 +76,14 @@ public class BankingApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleWithdraw();
+            }
+        });
+
+        // Add event listener for Transfer button
+        transferBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                handleTransfer();
             }
         });
 
@@ -123,6 +133,53 @@ public class BankingApp {
         balanceLabel.setText("Current Balance: R" + String.format("%.2f", balance));
         amountField.setText(""); // Clear input field
     }
+
+    private void handleTransfer() {
+        // Validate input fields
+        if (transferFromAccount.getSelectedValue() == null || transferToAccount.getSelectedValue() == null) {
+            JOptionPane.showMessageDialog(null, "Please select both accounts for the transfer.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String fromAccount = (String) transferFromAccount.getSelectedValue();
+        String toAccount = (String) transferToAccount.getSelectedValue();
+        if (fromAccount.equals(toAccount)) {
+            JOptionPane.showMessageDialog(null, "Transfer accounts must be different.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String amountText = transferAmount.getText().trim();
+        double transferAmount;
+
+        try {
+            transferAmount = Double.parseDouble(amountText);
+            if (transferAmount <= 0) {
+                JOptionPane.showMessageDialog(null, "Transfer amount must be greater than zero.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Please enter a valid transfer amount.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Perform transfer
+        if (transferAmount > balance) {
+            JOptionPane.showMessageDialog(null, "Insufficient balance for the transfer.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            balance -= transferAmount;
+            // Update the balance (this assumes a shared balance for simplicity)
+            updateBalance();
+
+            JOptionPane.showMessageDialog(null,
+                    String.format("Transferred R%.2f from %s to %s.", transferAmount, fromAccount, toAccount),
+                    "Transfer Successful",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            // Clear the transfer amount field
+            transferAmount.setText("");
+        }
+    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new BankingApp());
