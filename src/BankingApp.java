@@ -7,11 +7,14 @@ public class BankingApp {
     private double balance = 0.0; // Initial balance
     private JLabel balanceLabel;
     private JTextField amountField;
+    private JList transferFromAccount;
+    private JList transferToAccount;
+    private JTextField transAmount;
 
     public BankingApp() {
         // Create main frame
         JFrame frame = new JFrame("Banking App");
-        frame.setSize(400, 300);
+        frame.setSize(400, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new GridLayout(5, 1));
 
@@ -22,6 +25,15 @@ public class BankingApp {
         JButton depositButton = new JButton("Deposit");
         JButton withdrawButton = new JButton("Withdraw");
 
+        //Create Transfer Components
+        JLabel transferLabel = new JLabel("Transfer Money", SwingConstants.CENTER);
+        balanceLabel = new JLabel("Current Balance: R0.00", SwingConstants.CENTER);
+        transferFromAccount = new JList<>();
+        transferToAccount = new JList<>();
+        transAmount = new JTextField();
+        JButton transferBtn = new JButton("Transfer");
+
+
         // Add components to the frame
         frame.add(welcomeLabel);
         frame.add(balanceLabel);
@@ -31,6 +43,24 @@ public class BankingApp {
         buttonPanel.add(depositButton);
         buttonPanel.add(withdrawButton);
         frame.add(buttonPanel);
+
+        // Panel for Transfer actions
+        JPanel transferPanel = new JPanel(new GridLayout(5, 1));
+        transferPanel.add(transferLabel);
+        transferPanel.add(new JLabel("From Account:"));
+        transferPanel.add(transferFromAccount);
+        transferPanel.add(new JLabel("To Account:"));
+        transferPanel.add(transferToAccount);
+        transferPanel.add(new JLabel("Transfer Amount:"));
+        transferPanel.add(transAmount);
+        transferPanel.add(transferBtn);
+
+        /*frame.add(transferLabel);
+        frame.add(balanceLabel);
+        frame.add(new JLabel("Enter Amount:", SwingConstants.CENTER));
+        frame.add(transAmount);
+        buttonPanel.add(transferBtn);
+        frame.add(buttonPanel);*/
 
         // Add button actions
         depositButton.addActionListener(new ActionListener() {
