@@ -69,18 +69,32 @@ public class BankingApp {
     private void handleWithdraw() {
         try {
             double amount = Double.parseDouble(amountField.getText());
+
+            // Ensure the amount is positive
             if (amount <= 0) {
                 JOptionPane.showMessageDialog(null, "Please enter a positive amount!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Ensure the amount is greater than or equal to R10
             if (amount < 10) {
                 JOptionPane.showMessageDialog(null, "You cannot withdraw less than R10!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Ensure the amount is a multiple of 10
+            if (amount % 10 != 0) {
+                JOptionPane.showMessageDialog(null, "You can only withdraw amounts that are multiples of R10 (e.g., 10, 20, 50).", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Ensure there are sufficient funds
             if (amount > balance) {
                 JOptionPane.showMessageDialog(null, "Insufficient funds! Your balance is R" + balance, "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+
+            // Perform the withdrawal and update balance
             balance -= amount;
             updateBalance();
             JOptionPane.showMessageDialog(null, "Successfully withdrew R" + amount + "!", "Withdrawal Successful", JOptionPane.INFORMATION_MESSAGE);
